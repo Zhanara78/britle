@@ -2,11 +2,12 @@ import 'game.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
-class Title extends StatelessWidget {
-  const Title(this.letter, this.hitType, {super.key});
+class Tile extends StatelessWidget {
+  Tile(this.letter, this.hitType, {super.key});
+
   final String letter;
   final HitType hitType;
 
@@ -29,9 +30,14 @@ class Title extends StatelessWidget {
   }
 }
 
-class GamePage extends StatelessWidget {
+class GamePage extends StatefulWidget {
   GamePage({super.key});
 
+  @override
+  State<GamePage> createState() => _GamePageState();
+}
+
+class _GamePageState extends State<GamePage> {
   final Game _game = Game();
 
   @override
@@ -45,12 +51,14 @@ class GamePage extends StatelessWidget {
             Row(
               spacing: 5.0,
               children: [
-                for (final letter in guess) Title(letter.char, letter.type),
+                for (final letter in guess) Tile(letter.char, letter.type),
               ],
             ),
           GuessInput(
             onSubmitGuess: (text) {
-              print("Тест");
+              setState(() {
+                _game.guess(text);
+              });
             },
           ),
         ],
@@ -60,11 +68,12 @@ class GamePage extends StatelessWidget {
 }
 
 class GuessInput extends StatelessWidget {
-  final Function(String) onSubmitGuess;
-  final TextEditingController _textEditingController = TextEditingController();
-  final FocusNode _focus = FocusNode();
-
   GuessInput({super.key, required this.onSubmitGuess});
+
+  final Function(String) onSubmitGuess;
+
+  final TextEditingController _controller = TextEditingController();
+  final FocusNode _focus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +83,7 @@ class GuessInput extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(8.0),
             child: TextField(
-              controller: _textEditingController,
+              controller: _controller,
               focusNode: _focus,
               maxLength: 5,
               decoration: InputDecoration(
@@ -84,7 +93,9 @@ class GuessInput extends StatelessWidget {
                 ),
               ),
               onSubmitted: (input) {
-                print(_textEditingController.text);
+                onSubmitGuess(_controller.text.trim());
+                _controller.clear();
+                _focus.requestFocus();
               },
             ),
           ),
@@ -93,8 +104,8 @@ class GuessInput extends StatelessWidget {
           padding: EdgeInsets.zero,
           icon: Icon(Icons.arrow_circle_up),
           onPressed: () {
-            onSubmitGuess(_textEditingController.text.trim());
-            _textEditingController.clear();
+            onSubmitGuess(_controller.text.trim());
+            _controller.clear();
             _focus.requestFocus();
           },
         ),
@@ -104,7 +115,7 @@ class GuessInput extends StatelessWidget {
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
