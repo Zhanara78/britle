@@ -13,7 +13,9 @@ class Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 500),
+      curve: Curves.bounceIn,
       width: 60,
       height: 60,
       decoration: BoxDecoration(
@@ -25,7 +27,9 @@ class Tile extends StatelessWidget {
           _ => Colors.white,
         },
       ),
-      child: Center(child: Text(letter.toUpperCase())),
+      child: Center(
+        child: Text(letter.toUpperCase()),
+      ),
     );
   }
 }
@@ -51,7 +55,8 @@ class _GamePageState extends State<GamePage> {
             Row(
               spacing: 5.0,
               children: [
-                for (final letter in guess) Tile(letter.char, letter.type),
+                for (final letter in guess)
+                  Tile(letter.char, letter.type),
               ],
             ),
           GuessInput(
@@ -89,7 +94,9 @@ class GuessInput extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: "Enter your guess",
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8.0),
+                  ),
                 ),
               ),
               onSubmitted: (input) {
@@ -121,9 +128,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Center(child: GamePage()),
+        body: Center(
+          child: GamePage(),
+        ),
         appBar: AppBar(
-          title: Align(alignment: Alignment.centerLeft, child: Text("Bridle")),
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: Text("Bridle"),
+          ),
         ),
       ),
     );
